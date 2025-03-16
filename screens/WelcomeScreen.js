@@ -10,7 +10,7 @@ const WelcomeScreen = ({ navigation }) => {
       <Text style={styles.subtitle}>
       Experience the future of sound and health! 🎧💙 Stay connected, track your vitals in real-time, and enjoy music like never before with our smart bone conduction headphones.
       </Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SignupScreen")}>
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>
     </View>

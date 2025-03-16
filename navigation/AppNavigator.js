@@ -1,20 +1,22 @@
+// navigation/AppNavigator.js
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import WelcomeScreen from "../screens/WelcomeScreen";
-import DashboardScreen from "../screens/DashboardScree";
-import ProfileScreen from "../screens/ProfileScreen";
+import SignupScreen from "../screens/SignupScreen";
 import LoginScreen from "../screens/LoginScreen";
+import HomeScreen from "../screens/HomeScreen";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Dashboard" component={DashboardScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
