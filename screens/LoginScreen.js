@@ -63,7 +63,6 @@ const LoginScreen = ({ navigation }) => {
 
       {/* Password Input */}
       <View style={styles.inputWrapper}>
-        pulpit
         <Text style={styles.inputLabel}>PASSWORD</Text>
         <View style={styles.inputContainer}>
           <FontAwesome name="lock" size={18} color="#023a75" style={styles.icon} />
