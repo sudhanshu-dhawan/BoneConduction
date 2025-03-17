@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "123676630098",
+    "firebase_url": "https://bonetune-dec3f-default-rtdb.firebaseio.com",
+    "project_id": "bonetune-dec3f",
+    "storage_bucket": "bonetune-dec3f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123676630098:android:e0b685cf8c80fd9b86538b",
+        "android_client_info": {
+          "package_name": "com.capstone.boneconduction"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqi7MdqNF6bXTej_Yq60AY5Am5eCJGrNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

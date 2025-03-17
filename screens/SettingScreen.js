@@ -83,20 +83,21 @@ const ProfileScreen = () => {
 
       {/* Options */}
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("SettingScreen")}>
-          <MaterialCommunityIcons name="cog-outline" size={24} color="#023a75" />
-          <Text style={styles.optionText}>Settings</Text>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("EditDetailsScreen")}>
+          <MaterialCommunityIcons name="account-edit" size={24} color="#023a75" />
+          <Text style={styles.optionText}>Edit Details</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("SupportScreen")}>
-          <FontAwesome name="question-circle-o" size={24} color="#023a75" />
-          <Text style={styles.optionText}>Support</Text>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("AccountScreen")}>
+          <FontAwesome name="user-circle"size={24} color="#023a75" />
+          <Text style={styles.optionText}>Account</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.option} onPress={handleLogout}>
-          <MaterialCommunityIcons name="logout" size={24} color="red" />
-          <Text style={[styles.optionText, { color: "red" }]}>Logout</Text>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("AboutUsScreen")}>
+          <MaterialCommunityIcons name="information-outline" size={24} color="#023a75" />
+          <Text style={styles.optionText}>About Us</Text>
         </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -105,7 +106,7 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 20 },
+  container: { flex: 1, marginTop:40 , backgroundColor: "#fff", padding: 20 },
   header: { alignItems: "center", marginBottom: 20 },
   avatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#ddd", alignItems: "center", justifyContent: "center" },
   avatarText: { fontSize: 30, fontWeight: "bold", color: "#023a75" },

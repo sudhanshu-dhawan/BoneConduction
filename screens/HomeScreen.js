@@ -11,7 +11,7 @@ import MonthlyStatusScreen from "./MonthlyStatusScreen";
 import ReportScreen from "./ReportScreen";
 import ChatBotScreen from "./ChatBotScreen";
 
-const HomeScreen = () => {
+export const HomeScreen = () => {
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("Temperature");
   const [userName, setUserName] = useState("User");
@@ -107,6 +107,8 @@ const HomeScreen = () => {
         ))}
       </View>
 
+
+
       {renderHealthData()}
 
       {/* Services Section */}
@@ -172,4 +174,3 @@ const styles = StyleSheet.create({
   serviceBox: { alignItems: "center", padding: 15, backgroundColor: "#eee", borderRadius: 10, width: 120 },
   serviceText: { marginTop: 5, fontSize: 14, fontWeight: "600" },
 });
-

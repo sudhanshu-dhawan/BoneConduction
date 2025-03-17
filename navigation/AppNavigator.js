@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { getAuth, onAuthStateChanged } from "firebase/auth"; // Ensure Firebase Auth is imported
+import { getAuth, onAuthStateChanged } from "firebase/auth"; 
+import { getDatabase, ref, get } from "firebase/database"; // Import Realtime Database methods
+import SupportScreen from "../screens/SupportScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import SignupScreen from "../screens/SignupScreen";
 import LoginScreen from "../screens/LoginScreen";
-import HomeScreen from "../screens/HomeScreen"
+import HomeScreen  from "../screens/HomeScreen";
 import ReportScreen from "../screens/ReportScreen";
 import ChatBotScreen from "../screens/ChatBotScreen";
 import MonthlyStatusScreen from "../screens/MonthlyStatusScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import SettingScreen from "../screens/SettingScreen";
+import EditDetailsScreen from "../screens/EditDetailsScreen"
+import AccountScreen from "../screens/AccountScreen";
+import AboutUsScreen from "../screens/AboutUsScreen";
+
 
 const Stack = createStackNavigator();
 
@@ -18,13 +25,33 @@ const AppNavigator = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth(); // Initialize Firebase Auth
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false); // Stop loading after checking auth state
+    const auth = getAuth();
+    const db = getDatabase();
+
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        try {
+          // Reference to the user's data in Realtime Database
+          const userRef = ref(db, `users/${authUser.uid}`);
+          const snapshot = await get(userRef);
+
+          if (snapshot.exists()) {
+            setUser(authUser); // Set user only if they exist in DB
+          } else {
+            console.log("User not found in database!");
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
     });
 
-    return unsubscribe; // Cleanup the listener when component unmounts
+    return unsubscribe;
   }, []);
 
   if (loading) return null; // Prevent UI flickering while checking auth state
@@ -33,16 +60,19 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
-          // If user is logged in, show the HomeScreen
           <>
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="ChatBotScreen" component={ChatBotScreen} />
             <Stack.Screen name="MonthlyStatusScreen" component={MonthlyStatusScreen} />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <Stack.Screen name="ReportScreen" component={ReportScreen} />
+            <Stack.Screen name="SettingScreen" component={SettingScreen} />
+            <Stack.Screen name="EditDetailsScreen" component={EditDetailsScreen} />
+            <Stack.Screen name="SupportScreen" component={SupportScreen} />
+            <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
+            <Stack.Screen name="AccountScreen" component={AccountScreen} />
           </>
         ) : (
-          // If no user is logged in, show Welcome, Signup, and Login screens
           <>
             <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
             <Stack.Screen name="SignupScreen" component={SignupScreen} />
