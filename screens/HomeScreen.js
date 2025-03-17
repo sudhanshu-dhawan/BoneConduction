@@ -17,6 +17,8 @@ export const HomeScreen = () => {
   const [userName, setUserName] = useState("User");
   const [userData, setUserData] = useState({ temperature: 36, oxygen: 98, heartRate: 72 });
   const [loading, setLoading] = useState(true);
+  const [dates, setDates] = useState([]);
+
   useEffect(() => {
     console.log("Fetching user data...");
 
@@ -41,13 +43,31 @@ export const HomeScreen = () => {
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
     fetchUserData();
+    generateDates(); // Generate dates dynamically
   }, []);
 
+  const generateDates = () => {
+    const today = new Date();
+    let dateArray = [];
+  
+    for (let i = 0; i < 7; i++) {
+      let nextDate = new Date();
+      nextDate.setDate(today.getDate() + i);
+  
+      let dayName = nextDate.toLocaleDateString("en-IN", { weekday: "short" }); // Corrected for Indian locale
+      let formattedDate = `${nextDate.getDate()}-${nextDate.getMonth() + 1}-${nextDate.getFullYear()} (${dayName})`;
+  
+      dateArray.push(formattedDate);
+    }
+  
+    setDates(dateArray);
+  };
+  
   const renderHealthData = () => {
     let value = 0;
     let label = "";
@@ -68,7 +88,6 @@ export const HomeScreen = () => {
 
     return (
       <View style={styles.healthContainer}>
-        
         <Text style={styles.healthLabel}>{label}</Text>
         <Text style={styles.healthValue}>{value}</Text>
       </View>
@@ -85,9 +104,9 @@ export const HomeScreen = () => {
         <Text style={styles.username}>Welcome back, {userName}!</Text>
       </View>
 
-      {/* Calendar */}
+      {/* Calendar with dynamically generated dates */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.calendar}>
-        {["18 Mon", "19 Tue", "20 Wed", "21 Thu", "22 Fri", "23 Sat", "24 Sun"].map((day, index) => (
+        {dates.map((day, index) => (
           <TouchableOpacity key={index} style={styles.dateBox}>
             <Text style={styles.dateText}>{day}</Text>
           </TouchableOpacity>
@@ -106,8 +125,6 @@ export const HomeScreen = () => {
           </TouchableOpacity>
         ))}
       </View>
-
-
 
       {renderHealthData()}
 

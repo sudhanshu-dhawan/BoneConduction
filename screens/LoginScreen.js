@@ -1,44 +1,37 @@
-
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert , TouchableOpacity } from "react-native";
-import { auth, db } from "../config/fireBaseConfig";
-import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
-import { collection, getDoc, doc } from "firebase/firestore";
+import { View, Text, TextInput, Alert, TouchableOpacity } from "react-native";
+import { auth } from "../config/fireBaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { signInWithEmailAndPassword } from "firebase/auth";
-
 
 const LoginScreen = ({ navigation }) => {
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
   };
 
   const handleLogin = () => {
-    // Basic validation
     if (!form.email || !form.password) {
       Alert.alert("Error", "Email and Password are required!");
       return;
     }
 
-    // Sign in with Firebase Authentication
     signInWithEmailAndPassword(auth, form.email, form.password)
       .then((userCredential) => {
-        // User signed in successfully
         const user = userCredential.user;
         console.log("User signed in:", user);
         Alert.alert("Success", "Logged in successfully!");
-        // Navigate to the Home screen (or wherever you want to go after login)
         navigation.navigate("HomeScreen");
       })
       .catch((error) => {
         const errorMessage = error.message;
-        Alert.alert("Error", errorMessage);
+        Alert.alert("Invalid credentials or user does not exist");
       });
   };
 
@@ -47,7 +40,6 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.title}>Login</Text>
       <Text style={styles.subtitle}>Welcome back to BoneTune!</Text>
 
-      {/* Email Input */}
       <View style={styles.inputWrapper}>
         <Text style={styles.inputLabel}>E-MAIL</Text>
         <View style={styles.inputContainer}>
@@ -61,7 +53,6 @@ const LoginScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Password Input */}
       <View style={styles.inputWrapper}>
         <Text style={styles.inputLabel}>PASSWORD</Text>
         <View style={styles.inputContainer}>
@@ -69,19 +60,20 @@ const LoginScreen = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Your Password"
-            secureTextEntry
+            secureTextEntry={!passwordVisible}
             value={form.password}
             onChangeText={(text) => handleChange("password", text)}
           />
+          <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+            <FontAwesome name={passwordVisible ? "eye" : "eye-slash"} size={18} color="#023a75" style={styles.icon} />
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Login Button */}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      {/* Go to Sign Up */}
       <TouchableOpacity onPress={() => navigation.navigate("SignupScreen")}>
         <Text style={styles.signUpLink}>
           Don’t have an account? <Text style={styles.bold}>Sign Up</Text>

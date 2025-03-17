@@ -64,7 +64,7 @@ const ProfileScreen = () => {
       {/* User Avatar and Name */}
       <View style={styles.header}>
         <View style={styles.avatarPlaceholder}>
-          <Text style={styles.avatarText}>
+          <Text style={styles.avatarText} >
             {userData.name ? userData.name[0] : "U"}
           </Text>
         </View>
