@@ -5,7 +5,6 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 
-
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState({});
@@ -64,7 +63,7 @@ const ProfileScreen = () => {
       {/* User Avatar and Name */}
       <View style={styles.header}>
         <View style={styles.avatarPlaceholder}>
-          <Text style={styles.avatarText} >
+          <Text style={styles.avatarText}>
             {userData.name ? userData.name[0] : "U"}
           </Text>
         </View>
@@ -79,16 +78,23 @@ const ProfileScreen = () => {
         <Text style={styles.detailText}>🔹 Contact No.: {userData.contact || "Not Provided"}</Text>
         <Text style={styles.detailText}>🔹 Gender: {userData.gender || "Not Provided"}</Text>
         <Text style={styles.detailText}>🔹 Height: {userData.height ? `${userData.height} cm` : "Not Provided"}</Text>
+        <Text style={styles.detailText}>🔹 Disease: {userData.disease || "Not Provided"}</Text>
       </View>
 
       {/* Options */}
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("SettingScreen")}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate("SettingScreen")}
+        >
           <MaterialCommunityIcons name="cog-outline" size={24} color="#023a75" />
           <Text style={styles.optionText}>Settings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("SupportScreen")}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate("SupportScreen")}
+        >
           <FontAwesome name="question-circle-o" size={24} color="#023a75" />
           <Text style={styles.optionText}>Support</Text>
         </TouchableOpacity>
@@ -107,14 +113,33 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 20 },
   header: { alignItems: "center", marginBottom: 20 },
-  avatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#ddd", alignItems: "center", justifyContent: "center" },
+  avatarPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#ddd",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   avatarText: { fontSize: 30, fontWeight: "bold", color: "#023a75" },
   username: { fontSize: 22, fontWeight: "bold", marginTop: 10 },
 
-  detailsContainer: { padding: 15, backgroundColor: "#f5f5f5", borderRadius: 10, marginBottom: 20 },
+  detailsContainer: {
+    padding: 15,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+    marginBottom: 20,
+  },
   detailText: { fontSize: 16, marginBottom: 5 },
 
   optionsContainer: { marginTop: 20 },
-  option: { flexDirection: "row", alignItems: "center", padding: 15, backgroundColor: "#eee", borderRadius: 10, marginBottom: 10 },
+  option: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    backgroundColor: "#eee",
+    borderRadius: 10,
+    marginBottom: 10,
+  },
   optionText: { fontSize: 16, marginLeft: 10, fontWeight: "600" },
 });

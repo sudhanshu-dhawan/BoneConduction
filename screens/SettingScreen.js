@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import { auth } from "../config/fireBaseConfig"; // Firebase setup
+import { auth } from "../config/fireBaseConfig";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
-
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -21,7 +20,6 @@ const ProfileScreen = () => {
     const db = getDatabase();
     const userRef = ref(db, `users/${auth.currentUser.uid}`);
 
-    // Listen for real-time changes
     const unsubscribe = onValue(userRef, (snapshot) => {
       if (snapshot.exists()) {
         setUserData(snapshot.val());
@@ -31,7 +29,7 @@ const ProfileScreen = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe(); // Cleanup the listener when component unmounts
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = () => {
@@ -42,7 +40,7 @@ const ProfileScreen = () => {
         onPress: async () => {
           try {
             await auth.signOut();
-            navigation.replace("LoginScreen"); // Redirect to login
+            navigation.replace("LoginScreen");
           } catch (error) {
             console.error("Logout error:", error);
           }
@@ -79,6 +77,7 @@ const ProfileScreen = () => {
         <Text style={styles.detailText}>🔹 Contact No.: {userData.contact || "Not Provided"}</Text>
         <Text style={styles.detailText}>🔹 Gender: {userData.gender || "Not Provided"}</Text>
         <Text style={styles.detailText}>🔹 Height: {userData.height ? `${userData.height} cm` : "Not Provided"}</Text>
+        <Text style={styles.detailText}>🔹 Disease: {userData.disease || "Not Provided"}</Text>
       </View>
 
       {/* Options */}
@@ -89,7 +88,7 @@ const ProfileScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("AccountScreen")}>
-          <FontAwesome name="user-circle"size={24} color="#023a75" />
+          <FontAwesome name="user-circle" size={24} color="#023a75" />
           <Text style={styles.optionText}>Account</Text>
         </TouchableOpacity>
 
@@ -97,8 +96,12 @@ const ProfileScreen = () => {
           <MaterialCommunityIcons name="information-outline" size={24} color="#023a75" />
           <Text style={styles.optionText}>About Us</Text>
         </TouchableOpacity>
-
       </View>
+
+      {/* Logout Button */}
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -106,16 +109,74 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, marginTop:40 , backgroundColor: "#fff", padding: 20 },
-  header: { alignItems: "center", marginBottom: 20 },
-  avatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#ddd", alignItems: "center", justifyContent: "center" },
-  avatarText: { fontSize: 30, fontWeight: "bold", color: "#023a75" },
-  username: { fontSize: 22, fontWeight: "bold", marginTop: 10 },
+  container: {
+    flex: 1,
+    marginTop: 40,
+    backgroundColor: "#fff",
+    padding: 20,
+    justifyContent: "space-between",
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  avatarPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#ddd",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#023a75",
+  },
+  username: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
 
-  detailsContainer: { padding: 15, backgroundColor: "#f5f5f5", borderRadius: 10, marginBottom: 20 },
-  detailText: { fontSize: 16, marginBottom: 5 },
+  detailsContainer: {
+    padding: 15,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  detailText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
 
-  optionsContainer: { marginTop: 20 },
-  option: { flexDirection: "row", alignItems: "center", padding: 15, backgroundColor: "#eee", borderRadius: 10, marginBottom: 10 },
-  optionText: { fontSize: 16, marginLeft: 10, fontWeight: "600" },
+  optionsContainer: {
+    marginTop: 20,
+  },
+  option: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    backgroundColor: "#eee",
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  optionText: {
+    fontSize: 16,
+    marginLeft: 10,
+    fontWeight: "600",
+  },
+
+  logoutButton: {
+    backgroundColor: "#ff4d4d",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 30,
+  },
+  logoutText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });

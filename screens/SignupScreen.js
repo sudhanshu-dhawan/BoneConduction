@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { 
-  View, TextInput, TouchableOpacity, Alert, Text, 
-  StyleSheet, ScrollView 
+import {
+  View, TextInput, TouchableOpacity, Alert, Text,
+  StyleSheet, ScrollView
 } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../config/fireBaseConfig";
 import { ref, set } from "firebase/database";
 import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
 
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -16,8 +17,11 @@ const SignupScreen = ({ navigation }) => {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [gender, setGender] = useState("");
+  const [disease, setDisease] = useState(""); // 👈 New disease state
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSignup = async () => {
     if (!name || !email || !contact || !age || !weight || !height || !gender || !password || !confirmPassword) {
@@ -42,6 +46,7 @@ const SignupScreen = ({ navigation }) => {
         weight,
         height,
         gender,
+        disease, // 👈 Save disease
       });
 
       Alert.alert("Success", "Account created successfully!");
@@ -94,13 +99,58 @@ const SignupScreen = ({ navigation }) => {
           </Picker>
         </View>
 
+        {/* Disease Dropdown */}
+        <Text style={styles.label}>Select Disease (if any)</Text>
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={disease} onValueChange={(itemValue) => setDisease(itemValue)} style={styles.picker}>
+            <Picker.Item label="None" value="" />
+            <Picker.Item label="Diabetes" value="Diabetes" />
+            <Picker.Item label="Hypertension" value="Hypertension" />
+            <Picker.Item label="Asthma" value="Asthma" />
+            <Picker.Item label="Heart Disease" value="Heart Disease" />
+            <Picker.Item label="Other" value="Other" />
+          </Picker>
+        </View>
+
         {/* Password */}
         <Text style={styles.label}>Enter Password</Text>
-        <TextInput placeholder="Your Password" value={password} onChangeText={setPassword} style={styles.input} secureTextEntry />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Your Password"
+            value={password}
+            onChangeText={setPassword}
+            style={styles.passwordInput}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="gray"
+              style={styles.eyeIcon}
+            />
+          </TouchableOpacity>
+        </View>
 
         {/* Confirm Password */}
         <Text style={styles.label}>Confirm Password</Text>
-        <TextInput placeholder="Confirm Password" value={confirmPassword} onChangeText={setConfirmPassword} style={styles.input} secureTextEntry />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            style={styles.passwordInput}
+            secureTextEntry={!showConfirmPassword}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Ionicons
+              name={showConfirmPassword ? "eye-off" : "eye"}
+              size={24}
+              color="gray"
+              style={styles.eyeIcon}
+            />
+          </TouchableOpacity>
+        </View>
 
         {/* Signup Button */}
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
@@ -120,7 +170,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "center",
-    paddingVertical: 20,
+    paddingVertical: 40,
   },
   container: {
     flex: 1,
@@ -144,7 +194,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#002E5D", // Blue color for labels
+    color: "#002E5D",
     marginBottom: 5,
   },
   input: {
@@ -155,6 +205,23 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 16,
     backgroundColor: "#f9f9f9",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    backgroundColor: "#f9f9f9",
+    marginBottom: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 12,
+    fontSize: 16,
+  },
+  eyeIcon: {
+    padding: 12,
   },
   pickerContainer: {
     borderWidth: 1,

@@ -90,7 +90,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.boneconductionapp"
+    namespace 'com.capstone.boneconduction'
     defaultConfig {
         applicationId 'com.capstone.boneconduction'
         minSdkVersion rootProject.ext.minSdkVersion

@@ -16,8 +16,9 @@ import SettingScreen from "../screens/SettingScreen";
 import EditDetailsScreen from "../screens/EditDetailsScreen"
 import AccountScreen from "../screens/AccountScreen";
 import AboutUsScreen from "../screens/AboutUsScreen";
-
-
+import StepCounterScreen from "../screens/StepCounterScreen";
+import WaterReminderScreen from "../screens/WaterReminderScreen";
+import DataScreen from "../screens/DataScreen"
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -59,7 +60,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
+      {user ? (
           <>
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="ChatBotScreen" component={ChatBotScreen} />
@@ -71,14 +72,18 @@ const AppNavigator = () => {
             <Stack.Screen name="SupportScreen" component={SupportScreen} />
             <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
             <Stack.Screen name="AccountScreen" component={AccountScreen} />
-          </>
-        ) : (
+            <Stack.Screen name="StepCounterScreen" component={StepCounterScreen} />
+            <Stack.Screen name="WaterReminderScreen" component={WaterReminderScreen} />
+            <Stack.Screen name="DataScreen" component={DataScreen} />
+
+            </>
+      ):(
           <>
             <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
             <Stack.Screen name="SignupScreen" component={SignupScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
           </>
-        )}
+      )}
       </Stack.Navigator>
     </NavigationContainer>
   );
