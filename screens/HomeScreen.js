@@ -24,14 +24,10 @@ export const HomeScreen = () => {
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("Heart Rate");
   const [userName, setUserName] = useState("User");
-  const [userData, setUserData] = useState({
-    temperature: 36,
-    oxygen: 98,
-    heartRate: 72,
-  });
   const [liveData, setLiveData] = useState({
     heartRate: null,
     spo2: null,
+    temperature: null,
     lastUpdated: null
   });
   const [loading, setLoading] = useState(true);
@@ -84,6 +80,7 @@ export const HomeScreen = () => {
               setLiveData({
                 heartRate: latestReading.heartRate ?? null,
                 spo2: latestReading.spo2 ?? null,
+                temperature: latestReading.temperature ?? null,
                 lastUpdated: latestReading.timestamp 
                   ? new Date(latestReading.timestamp).toLocaleTimeString() 
                   : new Date().toLocaleTimeString()
@@ -121,60 +118,86 @@ export const HomeScreen = () => {
     setDates(dateArray);
   };
 
-  const getProgressValue = () => {
+  const getProgressData = () => {
     switch (selectedTab) {
       case "Temperature":
         return {
-          value: userData.temperature,
-          max: 42, // Max reasonable temperature
-          color: "#FFA500" // Orange
+          value: liveData.temperature || 0,
+          max: 42,
+          color: liveData.temperature 
+            ? liveData.temperature > 99.5
+              ? "#FF4500" // Red for fever
+              : liveData.temperature < 94 
+                ? "#FFA500" // Orange for low
+                : "#2E8B57" // Green for normal
+            : "#023a75",
+          unit: "°F",
+          label: "Body Temperature",
+          status: liveData.temperature 
+            ? liveData.temperature > 99.5 
+              ? "High"
+              : liveData.temperature < 94 
+                ? "Low"
+                : "Normal"
+            : "--"
         };
       case "Oxygen Level":
         return {
           value: liveData.spo2 || 0,
           max: 100,
-          color: "#2E8B57" // Green
+          color: liveData.spo2 
+            ? liveData.spo2 < 90 
+              ? "#FF4500" // Red for low
+              : liveData.spo2 < 95 
+                ? "#FFA500" // Orange for borderline
+                : "#2E8B57" // Green for normal
+            : "#023a75",
+          unit: "%",
+          label: "Oxygen Level",
+          status: liveData.spo2 
+            ? liveData.spo2 < 90 
+              ? "Low"
+              : liveData.spo2 < 95 
+                ? "Borderline"
+                : "Normal"
+            : "--"
         };
       case "Heart Rate":
         return {
           value: liveData.heartRate || 0,
-          max: 150, // Max reasonable heart rate
+          max: 150,
           color: liveData.heartRate 
             ? liveData.heartRate < 60 
               ? "#FFA500" // Orange for low
               : liveData.heartRate > 100 
                 ? "#FF4500" // Red for high
                 : "#2E8B57" // Green for normal
-            : "#023a75" // Default blue
+            : "#023a75",
+          unit: "BPM",
+          label: "Heart Rate",
+          status: liveData.heartRate 
+            ? liveData.heartRate < 60 
+              ? "Low"
+              : liveData.heartRate > 100 
+                ? "High"
+                : "Normal"
+            : "--"
         };
       default:
         return {
           value: 0,
           max: 100,
-          color: "#023a75"
+          color: "#023a75",
+          unit: "",
+          label: "",
+          status: "--"
         };
     }
   };
 
   const renderHealthData = () => {
-    const { value, max, color } = getProgressValue();
-    let label = "";
-    let displayValue = "";
-
-    switch (selectedTab) {
-      case "Temperature":
-        label = "Body Temperature";
-        displayValue = `${value}°C`;
-        break;
-      case "Oxygen Level":
-        label = "Oxygen Level";
-        displayValue = liveData.spo2 !== null ? `${liveData.spo2}%` : "--";
-        break;
-      case "Heart Rate":
-        label = "Heart Rate";
-        displayValue = liveData.heartRate !== null ? `${liveData.heartRate} BPM` : "--";
-        break;
-    }
+    const { value, max, color, unit, label, status } = getProgressData();
+    const displayValue = value !== null ? `${value}${unit}` : "--";
 
     return (
       <View style={styles.healthContainer}>
@@ -191,7 +214,8 @@ export const HomeScreen = () => {
             />
             <Text style={styles.healthLabel}>{label}</Text>
             <Text style={[styles.healthValue, { color }]}>{displayValue}</Text>
-            {selectedTab !== "Temperature" && liveData.lastUpdated && (
+            <Text style={[styles.healthStatus, { color }]}>{status}</Text>
+            {liveData.lastUpdated && (
               <Text style={styles.updateText}>Last updated: {liveData.lastUpdated}</Text>
             )}
           </>
@@ -255,15 +279,14 @@ export const HomeScreen = () => {
           <FontAwesome name="comments" size={24} color="#023a75" />
           <Text style={styles.serviceText}>ChatBot</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.serviceBox}
+          onPress={() => navigation.navigate("Sensor Data")}
+        >
+          <MaterialCommunityIcons name="heart-pulse" size={24} color="#023a75" />
+          <Text style={styles.serviceText}>Live Data</Text>
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity
-        style={styles.serviceBox}
-        onPress={() => navigation.navigate("Sensor Data")}
-      >
-        <MaterialCommunityIcons name="heart-pulse" size={24} color="#023a75" />
-        <Text style={styles.serviceText}>Live Data</Text>
-      </TouchableOpacity>
 
       {/* Dropdown */}
       <View style={styles.dropdownWrapper}>
@@ -278,13 +301,13 @@ export const HomeScreen = () => {
           <View style={styles.dropdownOptions}>
             <TouchableOpacity
               style={styles.dropdownOption}
-              onPress={() => handleDropdownSelect("StepCounterScreen")}
+              onPress={() => handleDropdownSelect("walking")}
             >
               <Text>Walking</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.dropdownOption}
-              onPress={() => handleDropdownSelect("StepCounterScreen")}
+              onPress={() => handleDropdownSelect("running")}
             >
               <Text>Running</Text>
             </TouchableOpacity>
@@ -295,12 +318,23 @@ export const HomeScreen = () => {
   );
 };
 
-
 const Tab = createBottomTabNavigator();
 
 export default function MainNavigator() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: "#023a75",
+        tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          paddingBottom: 5,
+          height: 60,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
+      }}
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
@@ -328,8 +362,7 @@ export default function MainNavigator() {
           ),
         }}
       />
-
-        <Tab.Screen
+      <Tab.Screen
         name="Sensor Data"
         component={DataScreen}
         options={{
@@ -362,6 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#eee",
     borderRadius: 10,
   },
+  dateText: { fontSize: 12 },
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -375,31 +409,40 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
   },
   activeTab: { borderBottomColor: "#023a75" },
-  tabText: { fontWeight: "bold" },
+  tabText: { fontWeight: "bold", fontSize: 12 },
   healthContainer: { alignItems: "center", padding: 20 },
   healthLabel: { fontSize: 16, fontWeight: "600", marginTop: 10 },
-  healthValue: { fontSize: 22, fontWeight: "bold", color: "#023a75" },
+  healthValue: { fontSize: 28, fontWeight: "bold", marginBottom: 4 },
+  healthStatus: { fontSize: 16, fontStyle: "italic", marginBottom: 8 },
+  updateText: {
+    fontSize: 12,
+    color: "#888",
+    marginTop: 10,
+    textAlign: "center",
+  },
   servicesContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20,
+    flexWrap: "wrap",
   },
   serviceBox: {
     alignItems: "center",
     padding: 15,
     backgroundColor: "#eee",
     borderRadius: 10,
-    width: 120,
+    width: 100,
+    marginBottom: 10,
   },
-  serviceText: { marginTop: 5, fontSize: 14, fontWeight: "600" },
-  dropdownWrapper: { marginTop: 30 },
+  serviceText: { marginTop: 5, fontSize: 12, fontWeight: "600" },
+  dropdownWrapper: { marginTop: 10, marginBottom: 20 },
   dropdownButton: {
     backgroundColor: "#023a75",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  dropdownButtonText: { color: "#fff", fontWeight: "bold" },
+  dropdownButtonText: { color: "#fff", fontWeight: "bold", fontSize: 14 },
   dropdownOptions: {
     backgroundColor: "#f0f0f0",
     marginTop: 8,

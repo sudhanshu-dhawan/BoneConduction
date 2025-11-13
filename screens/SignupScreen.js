@@ -17,7 +17,7 @@ const SignupScreen = ({ navigation }) => {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [gender, setGender] = useState("");
-  const [disease, setDisease] = useState(""); // 👈 New disease state
+  const [disease, setDisease] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +46,7 @@ const SignupScreen = ({ navigation }) => {
         weight,
         height,
         gender,
-        disease, // 👈 Save disease
+        disease,
       });
 
       Alert.alert("Success", "Account created successfully!");
@@ -91,7 +91,13 @@ const SignupScreen = ({ navigation }) => {
         {/* Gender Dropdown */}
         <Text style={styles.label}>Gender</Text>
         <View style={styles.pickerContainer}>
-          <Picker selectedValue={gender} onValueChange={(itemValue) => setGender(itemValue)} style={styles.picker}>
+          <Picker
+            selectedValue={gender}
+            onValueChange={(itemValue) => setGender(itemValue)}
+            style={styles.picker}
+            dropdownIconColor="#002E5D"
+            mode="dropdown" // This makes it work better on Android
+          >
             <Picker.Item label="Select Gender" value="" />
             <Picker.Item label="Male" value="Male" />
             <Picker.Item label="Female" value="Female" />
@@ -102,7 +108,13 @@ const SignupScreen = ({ navigation }) => {
         {/* Disease Dropdown */}
         <Text style={styles.label}>Select Disease (if any)</Text>
         <View style={styles.pickerContainer}>
-          <Picker selectedValue={disease} onValueChange={(itemValue) => setDisease(itemValue)} style={styles.picker}>
+          <Picker
+            selectedValue={disease}
+            onValueChange={(itemValue) => setDisease(itemValue)}
+            style={styles.picker}
+            dropdownIconColor="#002E5D"
+            mode="dropdown"
+          >
             <Picker.Item label="None" value="" />
             <Picker.Item label="Diabetes" value="Diabetes" />
             <Picker.Item label="Hypertension" value="Hypertension" />
@@ -229,10 +241,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
     backgroundColor: "#f9f9f9",
+    overflow: "hidden", // Important for Android
   },
   picker: {
     height: 50,
     width: "100%",
+    color: "#000", // Ensure text is visible
   },
   button: {
     backgroundColor: "#002E5D",
